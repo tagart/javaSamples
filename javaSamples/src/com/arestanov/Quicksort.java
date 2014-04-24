@@ -1,7 +1,10 @@
 package com.arestanov;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.RecursiveAction;
+import java.util.stream.Stream;
 
 public class Quicksort extends RecursiveAction {
 
@@ -16,7 +19,11 @@ public class Quicksort extends RecursiveAction {
         for (int i = 0; i < N; i++) {
             a[i] = random.nextInt();
         }
+        int[] b = a.clone();
         long time = System.nanoTime();
+        Arrays.sort(b);
+        System.out.println((System.nanoTime() - time) / 1_000_000_000);
+        time = System.nanoTime();
         invokeAll(new Quicksort(a, 0, N - 1));
         System.out.println((System.nanoTime() - time) / 1_000_000_000);
         boolean sorted = true;
@@ -25,6 +32,7 @@ public class Quicksort extends RecursiveAction {
                 sorted = false;
             }
         }
+        System.out.println(b[0]);
         System.out.println(a[0]);
         System.out.println(sorted);
     }
