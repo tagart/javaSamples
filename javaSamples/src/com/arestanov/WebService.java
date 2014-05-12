@@ -6,6 +6,8 @@
 
 package com.arestanov;
 
+import java.util.Random;
+
 /**
  *
  * @author varestanov
@@ -14,6 +16,6 @@ package com.arestanov;
 public class WebService implements WebServiceInterface {
     @Override
     public String getHelloWorldAsString(String name) {
-        return "Привет, " + name;
+        return "Привет, " + name + ", " + new Random().nextInt();
     }
 }

@@ -7,7 +7,6 @@
 package com.arestanov;
 
 import javax.jws.WebMethod;
-import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
@@ -15,9 +14,9 @@ import javax.jws.soap.SOAPBinding.Style;
  *
  * @author varestanov
  */
-@WebService
-@SOAPBinding(style = Style.DOCUMENT, use = SOAPBinding.Use.LITERAL)
-public interface WebServiceInterface {
-    @WebMethod
-    String getHelloWorldAsString(String name);
+@javax.jws.WebService
+@SOAPBinding(style = Style.RPC)
+public interface TimeServer {
+    @WebMethod String getTimeAsString();
+    @WebMethod long getTimeAsElapsed();
 }
