@@ -18,6 +18,7 @@ struct Token {
 struct Tokenizer {
 public:
 	Tokenizer() {
+        i = 0;
 		content = generate();
 		pos = content.begin();
 	};
@@ -35,6 +36,7 @@ private:
 private:
 	vector<Token>::iterator pos;
 	vector<Token> content;
+    int i;
 };
 
 class Expression;
@@ -74,10 +76,10 @@ public:
 	virtual void debug(string prefix) {
 		cout << prefix << "Operation(" << calc() << "): " << _operation << endl;
 		if(_left.get()) {
-			_left->debug(prefix+"\t");
+			_left->debug(prefix+" ");
 		}
 		if(_right.get()) {
-			_right->debug(prefix+"\t");
+			_right->debug(prefix+" ");
 		}
 	}
 protected:
@@ -94,10 +96,10 @@ public:
 	virtual void debug(string prefix) {
 		cout << prefix << "PriorityOperation(" << calc() << "): " << _operation << endl;
 		if(_left.get()) {
-			_left->debug(prefix+"\t");
+			_left->debug(prefix+" ");
 		}
 		if(_right.get()) {
-			_right->debug(prefix+"\t");
+			_right->debug(prefix+" ");
 		}
 	}
 };
@@ -111,7 +113,7 @@ public:
 	}
 	virtual void debug(string prefix) {
 		cout << prefix << "Brackets(" << calc() << "): " << endl;
-		_internal->debug(prefix+"\t");
+		_internal->debug(prefix+" ");
 	}
 protected:
 	std::auto_ptr<Expression> _internal;
@@ -201,12 +203,83 @@ ExpressionPtr Operation::parse(Tokenizer& tokens, ExpressionPtr& l) {
 	}
 }
 
+ExpressionPtr PriorityOperation::parse(Tokenizer& tokens, ExpressionPtr& left)
+{
+    const Token *t=tokens.peek();
+    if (!t || t->type == Token::closing_bracket  ) return left; //just return Value, sorry no operation guys
+
+        if (t->type == Token::operation && (t->text=="*" || t->text=="/") )
+        {
+                tokens.get(); //commit previuos peek
+
+                auto_ptr<PriorityOperation> result ( new PriorityOperation ); 
+                result->_operation = t->text;
+                result->_left=left;
+                result->_right=Expression::parse(tokens);
+                ExpressionPtr rs(result.release());
+
+                return PriorityOperation::parse(tokens, rs);
+
+        }
+        else if (t->type == Token::operation && (t->text=="+" || t->text=="-") )
+        {
+                return left;
+        }
+        else
+        {
+                throw logic_error("(PriorityOperation) Wtf is that: " + tokens.peek()->text );
+        }
+}
+
+float Operation::calc()
+{
+        if (_operation == "+")
+        {
+                float l=_left.get()?_left->calc():0.0f;
+                float r=_right.get()?_right->calc():0.0f;
+                return l+r;
+        }
+        else
+        if (_operation == "-")
+        {
+                float l=_left.get()?_left->calc():0.0f;
+                float r=_right.get()?_right->calc():0.0f;
+                return l-r;
+        }        
+        else
+        if (_operation == "*")
+        {
+                float l=_left.get()?_left->calc():1.0f;
+                float r=_right.get()?_right->calc():1.0f;
+                return  l*r; 
+        }        
+        else
+        if (_operation == "/")
+        {
+                float l = _left.get()?_left->calc():1.0f;
+                float r = _right.get()?_right->calc():1.0f;
+                return l/r;
+        }
+        else
+        {
+                throw logic_error("Wft: operation udefined");
+        }                
+}
+
 int main() {
-	printf("%d", 10);
 	try {
-		Tokenizer tk;
-	} catch(exception& e) {
-	}
+        Tokenizer tk;
+        ExpressionPtr null;
+        ExpressionPtr foo = Operation::parse(tk, null);
+        cout<<endl;
+        foo->debug("");
+        float result = foo->calc();
+        cout<<"result = "<<result<<endl;
+    } catch(exception& e) {
+        cout<<e.what()<<endl;
+        return 1;
+    }
+    return 0;
 }
 
 class Class {
@@ -215,7 +288,7 @@ class Class {
 };
 
 vector<Token> Tokenizer::generate(int level) {
-	if(level>6) {
+	if(level>3) {
 		Token t;
 		char f[100];
 		snprintf(f, 100, "%d", int(rand()%100));
@@ -228,6 +301,8 @@ vector<Token> Tokenizer::generate(int level) {
 		Token t1,t2;
 		t1.type=Token::opening_bracket;
 		t1.text="(";
+        i++;
+        printf("%d\n",i);
 		t2.type = Token::closing_bracket;
 		t2.text=")";
 		result.push_back(t1);
@@ -236,7 +311,9 @@ vector<Token> Tokenizer::generate(int level) {
 		result.push_back(t2);
 		return result;
 	}
-	char op="+-*/"[rand()%4];;
+	char op="+-*/"[rand()%4];
+    i++;
+    printf("%d %c\n",i,op);
 	Token t;
 	t.type=Token::operation;
 	t.text=op;
