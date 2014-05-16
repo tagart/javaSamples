@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    <xs:simpleType name="restrictedDecimal">
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="14" />
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="itemType">
+        <xs:sequence>
+            <xs:element name="id">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="12" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="title" type="xs:string" />
+            <xs:element name="price" type="restrictedDecimal"/>
+            <xs:element name="item" type="itemType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="list">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="itemType" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
