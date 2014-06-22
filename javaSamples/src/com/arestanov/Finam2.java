@@ -6,8 +6,8 @@
 
 package com.arestanov;
 
-abstract class A_ {
-    public A_() {
+abstract class C_ {
+    public C_() {
         System.out.println(value());
     }
     abstract Object value();
@@ -17,7 +17,7 @@ abstract class A_ {
  *
  * @author Valera
  */
-public class Finam2 extends A_ {
+public class Finam2 extends C_ {
     
     private final Object value = new Object();
     

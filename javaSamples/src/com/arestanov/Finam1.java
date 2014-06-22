@@ -5,11 +5,11 @@
  */
 package com.arestanov;
 
-class A {
+class A_ {
 
     private final Object value;
 
-    public A(Object value) {
+    public A_(Object value) {
         this.value = value;
         System.out.println(value);
     }
@@ -19,13 +19,13 @@ class A {
  *
  * @author varestanov
  */
-public class Finam1 extends A {
+public class Finam1 extends A_ {
 
     private final Object value = new Object();
     
     public Finam1() {
-        super(null);//можно
-        //super(value);//нельзя
+        super(null);//пїЅпїЅпїЅпїЅпїЅ
+        //super(value);//пїЅпїЅпїЅпїЅпїЅпїЅ
     }
     
     public static void main(String[] args) {
