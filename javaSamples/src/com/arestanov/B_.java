@@ -4,7 +4,7 @@
  * and open the template in the editor. Привет
  */
 
-package com.arestanov;
+package com.arestanov;// Hru Hru
 
 /**
  *
