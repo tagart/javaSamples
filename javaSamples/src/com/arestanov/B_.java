@@ -6,7 +6,6 @@
 
 package com.arestanov;
 
-
 /**
  *
  * @author Valera
